@@ -26,7 +26,9 @@
             @endforeach
         </tbody>
     </table>
-
+    <div class="mt-4">
+        <h4><strong>Total Pembayaran: IDR {{ number_format($totalPayment, 2) }}</strong></h4>
+    </div>
     <div class="mt-4">
         <a href="{{ route('apoteker.dashboard') }}" class="btn btn-secondary">Kembali</a>
         @if($examination->status == 0)

@@ -13,6 +13,8 @@ use App\Models\Receipt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 
 class ExaminationController extends Controller
 {
@@ -70,7 +72,7 @@ class ExaminationController extends Controller
             $filePath = $request->file('file') ? $request->file('file')->store('uploads') : null;
             $examination = Examination::create([
                 'user_id' => Auth::id(),
-                'patient_name'=> $request->height,
+                'patient_name'=> $request->patient_name,
                 'examination_time' => date('Y-m-d H:i:s'),
                 'height' => $request->height,
                 'weight' => $request->weight,
@@ -128,26 +130,12 @@ class ExaminationController extends Controller
 
     public function update(Request $request, Examination $examination)
     {
-        // $request->validate([
-        //     'patient_name' => 'nullable|string',
-        //     'height' => 'nullable|numeric',
-        //     'weight' => 'nullable|numeric',
-        //     'systole' => 'nullable|integer',
-        //     'diastole' => 'nullable|integer',
-        //     'heart_rate' => 'nullable|integer',
-        //     'respiration_rate' => 'nullable|integer',
-        //     'temperature' => 'nullable|numeric',
-        //     'notes' => 'nullable|string',
-        //     'file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-        // ]);
-        // if ($request->file('file')) {
-        //     if ($examination->file) {
-        //         Storage::delete($examination->file);
-        //     }
-        //     $filePath = $request->file('file')->store('uploads');
-        // } else {
-        //     $filePath = $examination->file;
-        // }
+        $receipts = Receipt::where('examination_id', $examination->id)->get();
+        Log::info('Data examination akan diperbarui', [
+            'user_id' => Auth::id(),
+            'examination_id' => $examination->id,
+            'original_data' => $receipts->toArray(),
+        ]);
 
         DB::beginTransaction();
         try {
@@ -185,7 +173,14 @@ class ExaminationController extends Controller
                     
                 }
             }
-           
+
+            $receipts = Receipt::where('examination_id', $examination->id)->get();
+            Log::info('Data examination berhasil diperbarui', [
+                'user_id' => Auth::id(),
+                'examination_id' => $examination->id,
+                'original_data' => $receipts->toArray(),
+            ]);
+
             DB::commit();
             return redirect()->route('dokter.dashboard')->with('success', 'Pemeriksaan berhasil diperbarui.');
         } catch (Exception $e) {

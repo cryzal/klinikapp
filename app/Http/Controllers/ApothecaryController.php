@@ -32,7 +32,8 @@ class ApothecaryController extends Controller
         try {
             $this->apiService->authenticate();
             $medicineDetails = $this->apiService->getMedicines();
-        } catch (\Exception $e) {      
+        } catch (\Exception $e) {   
+            dd($e->getMessage());   
             return back()->withErrors(['api' => $e->getMessage()]);
         }
 

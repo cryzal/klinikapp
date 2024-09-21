@@ -13,7 +13,7 @@ class CreateExaminationsTable extends Migration
         Schema::create('examinations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->dateTime('patient_name');
+            $table->string('patient_name');
             $table->dateTime('examination_time');
             $table->float('height')->nullable();
             $table->float('weight')->nullable();

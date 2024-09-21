@@ -140,7 +140,7 @@
                 </div>
             @enderror
         </div> -->
-
+        
         <h3>Resep</h3>
         <table class="table table-bordered" id="examinationTable">
             <thead>

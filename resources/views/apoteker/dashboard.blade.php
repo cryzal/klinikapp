@@ -3,13 +3,13 @@
 <div class="container">
     <h2>Dashboard Apoteker</h2>
 
-    <table class="table table-bordered">
+    <table class="table ">
         <thead>
             <tr>
                 <th>Nama Pasien</th>
                 <th>Waktu Pemeriksaan</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('apoteker.showExamination', $examination->id) }}" class="btn btn-info">Detail</a>
+                    <a href="{{ route('apoteker.showExamination', $examination->id) }}" class="btn btn-info btn-sm">Detail</a>
                 </td>
             </tr>
             @endforeach
