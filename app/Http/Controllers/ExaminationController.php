@@ -113,7 +113,8 @@ class ExaminationController extends Controller
         try {
             $this->apiService->authenticate();
             $medicines = $this->apiService->getMedicines();
-        } catch (\Exception $e) {      
+        } catch (\Exception $e) {  
+            echo  $e->getMessage();die();   
             return back()->withErrors(['api' => $e->getMessage()]);
         }
 
@@ -153,6 +154,8 @@ class ExaminationController extends Controller
             // ]);
     
             // Receipt::where('examination_id', $examination->id)->delete();
+            $createReceiptData = [];
+            $listIDUpdate = [];
             if(count($request->medication)>0){
                 for ($i=0; $i < count($request->medication); $i++) {
                     if($request->receipt_id[$i]!=null || $request->receipt_id[$i]!=""){
@@ -162,8 +165,9 @@ class ExaminationController extends Controller
                             'qty' => $request->quantity[$i],
                             'dosage' => $request->dosage[$i],
                         ]);
+                        array_push($listIDUpdate, $request->receipt_id[$i]);
                     }else{
-                        Receipt::create([
+                        array_push($createReceiptData, [
                             'examination_id' => $examination->id,
                             'medicine_id' => $request->medication[$i],
                             'qty' => $request->quantity[$i],
@@ -172,6 +176,14 @@ class ExaminationController extends Controller
                     }
                     
                 }
+            }
+
+            Receipt::where('examination_id', $examination->id)
+               ->whereNotIn('id', $listIDUpdate)
+               ->delete();
+
+            if(count($createReceiptData)>0){
+                Receipt::create($createReeiptData);
             }
 
             $receipts = Receipt::where('examination_id', $examination->id)->get();
